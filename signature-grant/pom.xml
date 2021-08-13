@@ -42,6 +42,12 @@
       <groupId>com.tomitribe.tribestream</groupId>
       <artifactId>tribestream-restapi-client</artifactId>
       <version>${version.tribestream}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.projectlombok</groupId>
+          <artifactId>lombok</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
