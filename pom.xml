@@ -37,12 +37,22 @@
     <tag>HEAD</tag>
   </scm>
 
+  <properties>
+    <version.tribestream>1.18</version.tribestream>
+  </properties>
+
   <modules>
     <module>signature-grant</module>
+    <module>tribestream-itest-api</module>
   </modules>
 
 
   <repositories>
+    <repository>
+      <id>tomitribe</id>
+      <name>Tomitribe Repository</name>
+      <url>https://repository.tomitribe.com/content/groups/tomitribe-public/</url>
+    </repository>
     <repository>
       <id>tribestream.io</id>
       <name>Tribestream Repository</name>

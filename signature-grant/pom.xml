@@ -36,7 +36,7 @@
     <dependency>
       <groupId>com.tomitribe.tribestream.itests</groupId>
       <artifactId>tribestream-itest-api</artifactId>
-      <version>1.19-SNAPSHOT</version>
+      <version>1.18</version>
     </dependency>
     <dependency>
       <groupId>com.tomitribe.tribestream</groupId>

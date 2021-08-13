@@ -91,7 +91,7 @@ public class SignatureGrantTest {
                 .name("Test Signature Profile")
                 .signatureAlgorithm("hmac-sha256")
                 .signatureHeader("Signature")
-                .signaturePrefix("")
+                .signaturePrefix("Signature")
                 .signHeader("(request-target)")
                 .signHeader("date")
                 .signHeader("digest")
@@ -214,7 +214,7 @@ public class SignatureGrantTest {
             headers.put("Date", now());
             headers.put("Content-Type", "application/x-www-form-urlencoded");
             headers.put("Digest", "sha-256=" + digest);
-            headers.put("Signature", signer.sign("POST", "/oauth2/token", headers).toString().replace("Signature ", ""));
+            headers.put("Signature", signer.sign("POST", "/oauth2/token", headers).toString());
 
             final String json = gateway.path("/oauth2/token").request()
                     .headers(new MultivaluedHashMap<>(headers))
