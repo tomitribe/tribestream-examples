@@ -38,14 +38,27 @@
   </scm>
 
   <properties>
-    <version.tribestream>1.18</version.tribestream>
+    <version.tribestream>1.19</version.tribestream>
   </properties>
 
   <modules>
     <module>signature-grant</module>
-    <module>tribestream-itest-api</module>
   </modules>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.tomitribe.tribestream</groupId>
+      <artifactId>tribestream-api-gateway</artifactId>
+      <version>1.19</version>
+      <type>tar.gz</type>
+      <exclusions>
+        <exclusion>
+          <groupId>com.tomitribe.tribestream</groupId>
+          <artifactId>tribestream</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
 
   <repositories>
     <repository>
