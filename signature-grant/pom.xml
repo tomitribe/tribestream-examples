@@ -36,12 +36,12 @@
     <dependency>
       <groupId>com.tomitribe.tribestream.itests</groupId>
       <artifactId>tribestream-itest-api</artifactId>
-      <version>1.18</version>
+      <version>${version.tribestream}</version>
     </dependency>
     <dependency>
       <groupId>com.tomitribe.tribestream</groupId>
       <artifactId>tribestream-restapi-client</artifactId>
-      <version>1.19-SNAPSHOT</version>
+      <version>${version.tribestream}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
