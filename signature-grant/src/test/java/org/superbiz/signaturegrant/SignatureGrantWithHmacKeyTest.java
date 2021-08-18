@@ -74,7 +74,7 @@ import static javax.ws.rs.client.Entity.entity;
 import static org.junit.Assert.assertEquals;
 import static org.tomitribe.auth.signatures.Algorithm.HMAC_SHA256;
 
-public class SignatureGrantTest {
+public class SignatureGrantWithHmacKeyTest {
 
     private static WebTarget gateway;
 
@@ -366,7 +366,7 @@ public class SignatureGrantTest {
         // Build a test app
         final File appJar = Archive.archive()
                 .add(HowdyService.class)
-                .add(SignatureGrantTest.class)
+                .add(SignatureGrantWithHmacKeyTest.class)
                 .asJar();
 
         // Boot a TomEE with the test app
