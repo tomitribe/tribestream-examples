@@ -16,10 +16,11 @@
  */
 package org.superbiz.signaturegrant;
 
-import com.tomitribe.tribestream.itest.api.Clients;
 import com.tomitribe.tribestream.itest.api.Tribestream;
+import com.tomitribe.tribestream.itest.api.util.Generate;
 import com.tomitribe.tribestream.restapi.client.TribestreamClient;
 import com.tomitribe.tribestream.restapi.model.account.AccountItem;
+import com.tomitribe.tribestream.restapi.model.account.ChangeCredential;
 import com.tomitribe.tribestream.restapi.model.account.ClientSecretItem;
 import com.tomitribe.tribestream.restapi.model.account.CredentialsItem;
 import com.tomitribe.tribestream.restapi.model.account.KeyItems;
@@ -57,6 +58,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.StringReader;
+import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -81,10 +83,17 @@ public class SignatureGrantTest {
         final Tomcat howdyService = startTestService();
 
         // Boot a fresh Tribestream install in a tmp directory
+        // This is something you'd usually only to in a test case
         final Tribestream tag = Tribestream.tribestream().build();
 
-        // Login as admin and change the admin password
-        final TribestreamClient admin = Clients.createAdmin(tag);
+        // Create a TribestreamClient with admin privileges
+        // Use of the TribestreamClient is something you would use
+        // in your own code to automate administration of the gateway
+        final TribestreamClient admin = createAdmin(tag.toURI());
+
+        // NOTE the TribestreamClient library is something that you
+        // absolutely can use in your projects as an alternative to
+        // the UI to automate administration of the TAG.
 
         // HTTP Signatures Profile
         final HttpSignatureProfileItem signatureProfileItem = admin.httpsignatureprofile().create(HttpSignatureProfileItem.builder()
@@ -194,6 +203,71 @@ public class SignatureGrantTest {
 
         gateway = ClientBuilder.newClient().target(tag.toURI());
 
+    }
+
+    /**
+     * In a real world setting before using the TAG in production you would
+     * change the admin password.  This method changes the password of the
+     * admin account to something random.
+     *
+     * Additionally, in a real-world scenario it is encouraged to avoid using
+     * the build-in "admin" account and instead create an account for each
+     * administrator with the appropriate privileges.  We'll do that as well,
+     * however, we'll generate a person to be the admin.
+     */
+    public static TribestreamClient createAdmin(final URI tagURI) {
+        // Create a TribestreamClient for the built-in admin account
+        TribestreamClient admin = TribestreamClient.builder()
+                .uri(tagURI)
+                .username("admin")
+                .password("admin")
+                .verbose(true)
+                .build();
+
+        // Generate a new password for the admin account
+        // In the real world you can pick one manually or
+        // use your password generator of choice
+        String newPassword = Generate.password();
+
+        // Send a ChangeCredential API call to TAG
+        admin.account().changeCredential("admin",
+                ChangeCredential.builder()
+                        .username("admin")
+                        .oldPassword("admin")
+                        .password(newPassword)
+                        .build());
+
+        // Rebuild the TribestreamClient so it now uses
+        // the new password
+        admin = admin.rebuild().username("admin").password(newPassword).build();
+
+        // (Optional) Follow best practice and create an admin
+        // account for each intended administrator.  For the
+        // purposes of testing we'll generate a user to be
+        // an admin in the system.
+        final String username = Generate.username();
+        final String password = Generate.password();
+        final String email = Generate.email();
+
+        // To give a user admin privileges grant them the
+        // role of "gateway-admin"
+        final AccountItem account = admin.account().create(
+                AccountItem.builder()
+                        .username(username)
+                        .email(email)
+                        .credentials(CredentialsItem.builder().password(password).build())
+                        .roles(new String[]{"gateway-admin"})
+                        .build());
+
+        // Now finally, create a TribestreamClient for this new admin account
+        // so we can use it for the remainder of our setup as we would in the
+        // real world.
+        return TribestreamClient.builder()
+                .uri(tagURI)
+                .username(account.getUsername())
+                .password(password)
+                .verbose(true)
+                .build();
     }
 
     @Test
